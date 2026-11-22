@@ -79,13 +79,21 @@ class Turbo::StreamsHelperTest < ActionView::TestCase
 
   test "with streamable" do
     assert_dom_equal \
-      %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}"></turbo-cable-stream-source>),
+      %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" hidden="hidden"></turbo-cable-stream-source>),
       turbo_stream_from("messages")
+  end
+
+  test "with an explicit hidden attribute" do
+    expected = %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}"></turbo-cable-stream-source>)
+
+    assert_dom_equal expected, turbo_stream_from("messages", hidden: false)
+    assert_dom_equal expected, turbo_stream_from("messages", hidden: nil)
+    assert_dom_equal expected, turbo_stream_from("messages", "hidden" => false)
   end
 
   test "with multiple streamables, some blank" do
     assert_dom_equal \
-      %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name(["channel", nil, "", "messages"])}"></turbo-cable-stream-source>),
+      %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name(["channel", nil, "", "messages"])}" hidden="hidden"></turbo-cable-stream-source>),
       turbo_stream_from("channel", nil, "", "messages")
   end
 
@@ -105,25 +113,25 @@ class Turbo::StreamsHelperTest < ActionView::TestCase
 
   test "with streamable and html attributes" do
     assert_dom_equal \
-      %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" data-stream-target="source"></turbo-cable-stream-source>),
+      %(<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" data-stream-target="source" hidden="hidden"></turbo-cable-stream-source>),
       turbo_stream_from("messages", data: { stream_target: "source" })
   end
 
   test "with channel" do
     assert_dom_equal \
-      %(<turbo-cable-stream-source channel="NonExistentChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}"></turbo-cable-stream-source>),
+      %(<turbo-cable-stream-source channel="NonExistentChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" hidden="hidden"></turbo-cable-stream-source>),
       turbo_stream_from("messages", channel: "NonExistentChannel")
   end
 
   test "with channel as a class name" do
     assert_dom_equal \
-      %(<turbo-cable-stream-source channel="TestChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}"></turbo-cable-stream-source>),
+      %(<turbo-cable-stream-source channel="TestChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" hidden="hidden"></turbo-cable-stream-source>),
       turbo_stream_from("messages", channel: TestChannel)
   end
 
   test "with channel and extra data" do
     assert_dom_equal \
-      %(<turbo-cable-stream-source channel="NonExistentChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" data-payload="1"></turbo-cable-stream-source>),
+      %(<turbo-cable-stream-source channel="NonExistentChannel" signed-stream-name="#{Turbo::StreamsChannel.signed_stream_name("messages")}" data-payload="1" hidden="hidden"></turbo-cable-stream-source>),
       turbo_stream_from("messages", channel: "NonExistentChannel", data: {payload: 1})
   end
 
